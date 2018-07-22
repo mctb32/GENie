@@ -754,14 +754,18 @@
 		_p(2,'<Link>')
 		_p(3,'<SubSystem>%s</SubSystem>', iif(cfg.kind == "ConsoleApp", "Console", "Windows"))
 
-		if vs2017 and cfg.flags.FullSymbols then
-			_p(3,'<GenerateDebugInformation>DebugFull</GenerateDebugInformation>')
+		if cfg.flags.FullSymbols then
+			if vs2017 then
+				_p(3,'<GenerateDebugInformation>DebugFull</GenerateDebugInformation>')
+			else
+				_p(3,'<GenerateDebugInformation>true</GenerateDebugInformation>')
+			end
 		elseif (vs2015 or vs2017) and cfg.flags.Symbols then
 			_p(3,'<GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>')
 		else
 			_p(3,'<GenerateDebugInformation>%s</GenerateDebugInformation>', tostring(cfg.flags.Symbols ~= nil)) 
 		end
-		
+				
 		if cfg.flags.Symbols then
 			_p(3, '<ProgramDatabaseFile>$(OutDir)%s.pdb</ProgramDatabaseFile>'
 				, path.getbasename(cfg.buildtarget.name)
